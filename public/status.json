@@ -1,9 +1,15 @@
 {
-  "updated_at": "2026-10-14T07:02:21.700797+00:00",
+  "updated_at": "2026-10-14T07:23:44.460338+00:00",
   "requested": 20,
   "selected": 0,
-  "candidates": 0,
+  "candidates": 13,
   "source_errors": 0,
+  "candidate_protocols": {
+    "vmess": 13
+  },
+  "test_outcomes": {
+    "connection_or_query_failed": 13
+  },
   "latency_limit_ms": 200.0,
   "risk_limit": 10,
   "measurement": "3 HTTPS total-time samples, all <= limit; median ranking",
