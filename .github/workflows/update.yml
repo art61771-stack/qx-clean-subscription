@@ -1,0 +1,56 @@
+name: Update QX subscription
+on:
+  workflow_dispatch:
+    inputs:
+      count:
+        description: Maximum selected nodes
+        default: '20'
+      max_latency:
+        description: Maximum each HTTPS sample in milliseconds
+        default: '200'
+  schedule:
+    - cron: '17 */6 * * *'
+permissions:
+  contents: write
+concurrency:
+  group: subscription-update
+  cancel-in-progress: false
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install verified sing-box release
+        shell: bash
+        run: |
+          set -euo pipefail
+          VERSION=1.12.12
+          FILE="sing-box-${VERSION}-linux-amd64.tar.gz"
+          BASE="https://github.com/SagerNet/sing-box/releases/download/v${VERSION}"
+          mkdir -p /tmp/singbox
+          curl -fLsS --retry 3 "$BASE/$FILE" -o "/tmp/singbox/$FILE"
+          cd /tmp/singbox
+          echo "7c103cb2f9a7dc54cb82962043596718ed27989a478d6405f0939a9b775f889f  $FILE" | sha256sum -c -
+          tar -xzf "$FILE"
+          sudo install "sing-box-${VERSION}-linux-amd64/sing-box" /usr/local/bin/sing-box
+      - name: Run tests
+        run: python -m unittest discover -s tests -v
+      - name: Collect and measure
+        env:
+          NODE_COUNT: ${{ inputs.count || '20' }}
+          MAX_LATENCY: ${{ inputs.max_latency || '200' }}
+          SOURCE_URLS: ${{ secrets.SOURCE_URLS }}
+        run: python collect.py --count "$NODE_COUNT" --max-latency "$MAX_LATENCY"
+      - name: Publish current output
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add public/qx.txt public/status.json
+          if ! git diff --cached --quiet; then
+            git commit -m 'Update measured QX subscription'
+            git push
+          fi

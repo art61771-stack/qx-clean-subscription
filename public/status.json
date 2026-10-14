@@ -1,0 +1,12 @@
+{
+  "updated_at": "2026-10-14T07:01:42.103503+00:00",
+  "requested": 20,
+  "selected": 0,
+  "candidates": 0,
+  "source_errors": 0,
+  "latency_limit_ms": 200,
+  "risk_limit": 10,
+  "measurement": "3 HTTPS total-time samples, all <= limit; median ranking",
+  "screening": "proxycheck.io proxy=no and risk<=limit; unknown rejected",
+  "results": []
+}
