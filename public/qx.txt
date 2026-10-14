@@ -1,4 +1,7 @@
-# Updated 2026-10-14T07:54:31.104700+00:00; passed 0/20; GitHub runner measurements
+# Updated 2026-10-14T08:03:04.070537+00:00; passed 0/20; GitHub runner measurements
+# Source: Pawdroid / https://github.com/Pawdroid/Free-servers
+# Source: free-nodes / https://github.com/free-nodes/v2rayfree
+# Source: VV科技 public subscription / https://github.com/free18/v2ray
 # Source: DartVPN / https://t.me/free4allVPN
 # Source: General Kim / https://t.me/general_kim_free_vpn
 # Source: VV科技 / https://t.me/vvkj11
