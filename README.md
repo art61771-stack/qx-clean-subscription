@@ -38,6 +38,7 @@ python collect.py --count 20 --max-latency 200 --max-risk 10
 ## 来源及公开凭据风险
 
 当前接入主动公开的自建分享：
+- General Kim / [@general_kim_free_vpn](https://t.me/general_kim_free_vpn)：运营者明确说明自己搭建 SS 服务器，且“欢迎大家自由使用并分享给更多人”。项目最后更新 2025-04-28，需实测确认存活。
 - VV科技 / [@vvkj11](https://t.me/vvkj11)：只读取 free18/v2ray README 的“自建节点”分组，不读取其聚合订阅。
 - 五叶 / [@hkaa0](https://t.me/hkaa0)：只读取 #自建 搜索页中明确写着“转发请标注来源”的帖子，排除匿名投稿，订阅保留署名。
 

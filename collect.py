@@ -155,9 +155,12 @@ def mark(reason):
 
 
 def test_node(node, args):
+    stage = 'server_dns'
     try:
         if not public_server(node['server']):
+            mark('non_public_server_rejected')
             return None
+        stage = 'core_start'
         port = free_port()
         config = {'log': {'disabled': True},
                   'inbounds': [{'type': 'socks', 'tag': 'in', 'listen': '127.0.0.1', 'listen_port': port}],
@@ -171,6 +174,7 @@ def test_node(node, args):
             try:
                 for _ in range(40):
                     if p.poll() is not None:
+                        mark('core_start_failed')
                         return None
                     try:
                         with socket.create_connection(('127.0.0.1', port), timeout=.1):
@@ -178,7 +182,9 @@ def test_node(node, args):
                     except OSError:
                         time.sleep(.05)
                 else:
+                    mark('core_start_timeout')
                     return None
+                stage = 'https_connection'
                 samples = []
                 for _ in range(3):
                     code, seconds = curl(port, 'https://www.gstatic.com/generate_204', True).split()
@@ -187,9 +193,12 @@ def test_node(node, args):
                         mark('https_latency_or_status_rejected')
                         return None
                     samples.append(ms)
+                stage = 'exit_ip_query'
                 ip = curl(port, 'https://api.ipify.org').strip()
                 if not ipaddress.ip_address(ip).is_global:
+                    mark('non_public_exit_rejected')
                     return None
+                stage = 'risk_query'
                 clean, risk = RISK.check(ip, args.max_risk)
                 if not clean:
                     mark('risk_rejected')
@@ -206,7 +215,7 @@ def test_node(node, args):
                     p.wait()
     except Exception:
         # Do not leak credentials/source URLs into public Actions logs.
-        mark('connection_or_query_failed')
+        mark(stage + '_failed')
         return None
 
 

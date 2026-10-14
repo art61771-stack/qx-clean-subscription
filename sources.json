@@ -1,5 +1,12 @@
 [
   {
+    "url": "https://raw.githubusercontent.com/general-vpn/FREE-Shadowsocks-Servers/main/README.md",
+    "redistribution_allowed": true,
+    "evidence": "https://github.com/general-vpn/FREE-Shadowsocks-Servers",
+    "note": "Operator says 搭建了几个 Shadowsocks 服务器供大家免费使用 and 欢迎大家自由使用并分享给更多人; last update 2025-04-28",
+    "attribution": "General Kim / https://t.me/general_kim_free_vpn"
+  },
+  {
     "url": "https://raw.githubusercontent.com/free18/v2ray/main/README.md",
     "format": "selfbuilt-markdown",
     "redistribution_allowed": true,
