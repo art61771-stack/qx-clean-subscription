@@ -28,7 +28,7 @@ python collect.py --count 20 --max-latency 200 --max-risk 10
 
 ## 筛选规则（不夸大“纯净”）
 
-1. 只解析标准 Shadowsocks AEAD、Trojan TCP+TLS URI。复杂插件、VMess/VLESS、WS/gRPC 等未实现，明确跳过，不生成错误 QX 配置。
+1. 支持标准 Shadowsocks AEAD、Trojan TCP+TLS、VMess AEAD TCP/WS（可选TLS）URI。复杂插件、VLESS/Reality、Trojan WS/gRPC 等明确跳过，不生成错误 QX 配置。VMess auto 导出为 QX aes-128-gcm。
 2. 真实 sing-box 代理转发，访问 `https://www.gstatic.com/generate_204` 三次。每次都是独立 curl，包含连接、代理握手、TLS、HTTP 响应时间；**三次均 ≤200ms** 才入选，按中位数排序。不是 TCP ping。
 3. 通过节点获取出口 IP；通过 proxycheck.io 公共 API 查询。仅 `proxy=no` 且风险分 ≤10 入选；缺失、额度耗尽、查询失败全部拒绝。代理节点往往会被标记为 proxy，因此可能无合格结果。此规则只是风险数据库筛选，**不保证住宅 IP、绝对干净或流媒体/AI 解锁**。
 4. 相同出口 IP 只保留最快一个。数量是上限，不足不凑数。
@@ -36,6 +36,12 @@ python collect.py --count 20 --max-latency 200 --max-risk 10
 6. 最多测试 150 个候选、4 并发；不做下载带宽压测。
 
 ## 来源及公开凭据风险
+
+当前接入主动公开的自建分享：
+- VV科技 / [@vvkj11](https://t.me/vvkj11)：只读取 free18/v2ray README 的“自建节点”分组，不读取其聚合订阅。
+- 五叶 / [@hkaa0](https://t.me/hkaa0)：只读取 #自建 搜索页中明确写着“转发请标注来源”的帖子，排除匿名投稿，订阅保留署名。
+
+这些是发布者自述的自建免费分享，并非对服务器所有权的独立审计。历史分享可能已失效；公开分享不等于低延迟、安全或干净，仍需实测。只看 Telegram 公开网页，不登录/入群，不抓取私人消息或付费凭据。
 
 `sources.json` 中每个来源必须标记 `redistribution_allowed: true`，并记录允许分享的证据。空列表时不会凭空生成节点。
 

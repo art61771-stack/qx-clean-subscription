@@ -67,12 +67,35 @@ def parse(line):
         node = dict(type='trojan', server=u.hostname, server_port=u.port,
                     password=U.unquote(u.username or ''),
                     tls={'enabled': True, 'server_name': q.get('sni', q.get('peer', [u.hostname]))[0]})
+    elif line.startswith('vmess://'):
+        import uuid
+        v = json.loads(b64(line[8:].split('#', 1)[0]))
+        if v.get('net', 'tcp') not in ('tcp', 'ws') or v.get('type', 'none') not in ('none', ''):
+            raise ValueError('Unsupported VMess transport')
+        if v.get('tls', '') not in ('', 'none', 'tls') or v.get('alpn') or v.get('fp'):
+            raise ValueError('Unsupported VMess TLS options')
+        security = v.get('scy', 'auto') or 'auto'
+        if security not in ('auto', 'aes-128-gcm', 'chacha20-poly1305', 'none'):
+            raise ValueError('Unsupported VMess security')
+        node = dict(type='vmess', server=v['add'], server_port=int(v['port']),
+                    uuid=str(uuid.UUID(v['id'])), security=security, alter_id=int(v.get('aid', 0)))
+        if node['alter_id'] != 0:
+            raise ValueError('Legacy VMess not supported')
+        if v.get('net') == 'ws':
+            node['transport'] = {'type': 'ws', 'path': v.get('path') or '/'}
+            if v.get('host'):
+                node['transport']['headers'] = {'Host': v['host']}
+        if v.get('tls') == 'tls':
+            node['tls'] = {'enabled': True, 'server_name': v.get('sni') or v.get('host') or v['add']}
     else:
-        raise ValueError('Only standard SS/Trojan URIs supported')
-    if not node['server'] or not node['server_port'] or not node['password']:
+        raise ValueError('Unsupported protocol')
+    credential = node.get('password', node.get('uuid'))
+    if not node['server'] or not node['server_port'] or not credential:
         raise ValueError('Incomplete node')
     # Reject ambiguous QX syntax rather than emit a malformed subscription.
-    for value in [node['server'], node['password'], node.get('tls', {}).get('server_name', '')]:
+    for value in [node['server'], credential, node.get('tls', {}).get('server_name', ''),
+                  node.get('transport', {}).get('path', ''),
+                  node.get('transport', {}).get('headers', {}).get('Host', '')]:
         if any(c in value for c in ',\r\n'):
             raise ValueError('QX-unsafe field')
     return node
@@ -120,6 +143,15 @@ class RiskCache:
 
 
 RISK = RiskCache()
+import collections
+import threading
+STATS = collections.Counter()
+STATS_LOCK = threading.Lock()
+
+
+def mark(reason):
+    with STATS_LOCK:
+        STATS[reason] += 1
 
 
 def test_node(node, args):
@@ -152,6 +184,7 @@ def test_node(node, args):
                     code, seconds = curl(port, 'https://www.gstatic.com/generate_204', True).split()
                     ms = float(seconds) * 1000
                     if code != '204' or ms > args.max_latency:
+                        mark('https_latency_or_status_rejected')
                         return None
                     samples.append(ms)
                 ip = curl(port, 'https://api.ipify.org').strip()
@@ -159,7 +192,9 @@ def test_node(node, args):
                     return None
                 clean, risk = RISK.check(ip, args.max_risk)
                 if not clean:
+                    mark('risk_rejected')
                     return None
+                mark('passed')
                 return {'node': node, 'latency_ms': round(statistics.median(samples), 1),
                         'max_latency_ms': round(max(samples), 1), 'risk': risk, 'ip': ip}
             finally:
@@ -171,6 +206,7 @@ def test_node(node, args):
                     p.wait()
     except Exception:
         # Do not leak credentials/source URLs into public Actions logs.
+        mark('connection_or_query_failed')
         return None
 
 
@@ -179,12 +215,25 @@ def qx(result, index):
     server = n['server']
     if ':' in server:
         server = '[' + server + ']'
-    head = 'shadowsocks' if n['type'] == 'shadowsocks' else 'trojan'
-    line = f"{head}={server}:{n['server_port']}, password={n['password']}"
+    head = n['type']
+    credential = n.get('password', n.get('uuid'))
+    line = f"{head}={server}:{n['server_port']}, password={credential}"
     if head == 'shadowsocks':
         line += ', method=' + n['method']
-    else:
-        line += ', over-tls=true, tls-verification=true, tls-host=' + n['tls']['server_name']
+    elif head == 'vmess':
+        method = {'auto': 'aes-128-gcm', 'chacha20-poly1305': 'chacha20-poly1305'}.get(n['security'], n['security'])
+        line += ', method=' + method
+        ws = n.get('transport')
+        if ws:
+            line += ', obfs=' + ('wss' if n.get('tls') else 'ws') + ', obfs-uri=' + ws['path']
+            if ws.get('headers', {}).get('Host'):
+                line += ', obfs-host=' + ws['headers']['Host']
+        elif n.get('tls'):
+            line += ', obfs=over-tls, obfs-host=' + n['tls']['server_name']
+    if n.get('tls'):
+        if head == 'trojan':
+            line += ', over-tls=true'
+        line += ', tls-verification=true, tls-host=' + n['tls']['server_name']
     return line + f", udp-relay=false, tag=Clean-{index:02d}-{result['latency_ms']:.0f}ms"
 
 
@@ -214,9 +263,25 @@ def main():
             continue
         try:
             text = fetch(source['url'])
-            if not any(p in text for p in ('ss://', 'trojan://')):
+            if source.get('format') == 'selfbuilt-markdown':
+                text = text.split('## 自建节点', 1)[1].split('====================================================', 1)[0]
+            elif source.get('format') == 'telegram-selfbuilt':
+                import re
+                import html
+                chunks = re.split(r'data-post="', text)[1:]
+                selected_posts = []
+                for chunk in chunks:
+                    match = re.search(r'<div class="tgme_widget_message_text[^>]*>(.*?)</div>', chunk, re.S)
+                    if match:
+                        body = html.unescape(re.sub(r'<[^>]+>', '\n', match.group(1)))
+                        if '自建' in body and '转发请标注来源' in body and '匿名' not in body:
+                            selected_posts.append(body)
+                text = '\n'.join(selected_posts)
+            if not any(p in text for p in ('ss://', 'trojan://', 'vmess://', 'vless://')):
                 text = b64(''.join(text.split()))
-            for line in text.splitlines():
+            import re
+            lines = re.findall(r'(?:ss|trojan|vmess)://[^\s<>`]+', text)
+            for line in lines:
                 try:
                     node = parse(line)
                     key = json.dumps(node, sort_keys=True)
@@ -242,9 +307,14 @@ def main():
             selected.append(r)
     now = dt.datetime.now(dt.timezone.utc).isoformat()
     header = f'# Updated {now}; passed {len(selected)}/{args.count}; GitHub runner measurements\n'
+    for source in sources:
+        if source.get('attribution'):
+            header += '# Source: ' + source['attribution'].replace('\n', ' ') + '\n'
     (out / 'qx.txt').write_text(header + '\n'.join(qx(r, i) for i, r in enumerate(selected, 1)) + '\n')
     report = {'updated_at': now, 'requested': args.count, 'selected': len(selected),
               'candidates': len(candidates), 'source_errors': source_errors,
+              'candidate_protocols': dict(collections.Counter(n['type'] for n in candidates)),
+              'test_outcomes': dict(STATS),
               'latency_limit_ms': args.max_latency, 'risk_limit': args.max_risk,
               'measurement': '3 HTTPS total-time samples, all <= limit; median ranking',
               'screening': 'proxycheck.io proxy=no and risk<=limit; unknown rejected',

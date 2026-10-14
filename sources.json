@@ -1,1 +1,18 @@
-[]
+[
+  {
+    "url": "https://raw.githubusercontent.com/free18/v2ray/main/README.md",
+    "format": "selfbuilt-markdown",
+    "redistribution_allowed": true,
+    "evidence": "https://github.com/free18/v2ray#自建节点",
+    "note": "Only the explicit 自建节点 section, public free share by @vvkj11; not the aggregated v.txt list",
+    "attribution": "VV科技 / https://t.me/vvkj11"
+  },
+  {
+    "url": "https://t.me/s/hkaa0?q=%23%E8%87%AA%E5%BB%BA",
+    "format": "telegram-selfbuilt",
+    "redistribution_allowed": true,
+    "evidence": "https://t.me/s/hkaa0?q=%23%E8%87%AA%E5%BB%BA",
+    "note": "Only self-built messages explicitly saying 转发请标注来源; excludes anonymous submissions",
+    "attribution": "五叶 / https://t.me/hkaa0"
+  }
+]

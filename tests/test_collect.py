@@ -18,6 +18,17 @@ class Tests(unittest.TestCase):
         self.assertTrue(n['tls']['enabled'])
         self.assertIn('tls-verification=true', c.qx({'node': n, 'latency_ms': 10}, 1))
 
+    def test_vmess_ws(self):
+        import json
+        data = dict(add='example.com', port='443', id='969f1909-c0d3-4c30-813d-3aec5c838b7d',
+                    aid='0', net='ws', type='none', tls='tls', host='tls.example.com', path='/ws')
+        uri = 'vmess://' + base64.b64encode(json.dumps(data).encode()).decode()
+        n = c.parse(uri)
+        self.assertEqual(n['transport']['path'], '/ws')
+        text = c.qx({'node': n, 'latency_ms': 15}, 1)
+        self.assertIn('obfs=wss', text)
+        self.assertIn('method=aes-128-gcm', text)
+
     def test_reject_options(self):
         for line in ['ss://YWVzLTEyOC1nY206eA@example.com:443?plugin=abc',
                      'trojan://x@example.com:443?allowInsecure=1',
