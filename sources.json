@@ -1,5 +1,26 @@
 [
   {
+    "url": "https://raw.githubusercontent.com/Pawdroid/Free-servers/main/sub",
+    "redistribution_allowed": true,
+    "evidence": "https://github.com/Pawdroid/Free-servers",
+    "note": "Upstream intentionally publishes a free shared subscription; user requested selection from public subscriptions. Aggregated provenance is not independently audited; not a claim of server ownership.",
+    "attribution": "Pawdroid / https://github.com/Pawdroid/Free-servers"
+  },
+  {
+    "url": "https://raw.githubusercontent.com/free-nodes/v2rayfree/main/sub",
+    "redistribution_allowed": true,
+    "evidence": "https://github.com/free-nodes/v2rayfree",
+    "note": "Upstream explicitly offers a public free subscription. Aggregated provenance not independently audited.",
+    "attribution": "free-nodes / https://github.com/free-nodes/v2rayfree"
+  },
+  {
+    "url": "https://raw.githubusercontent.com/free18/v2ray/main/v.txt",
+    "redistribution_allowed": true,
+    "evidence": "https://github.com/free18/v2ray",
+    "note": "Public free general subscription advertised by upstream; excludes account creation and private user submissions. Aggregated provenance not independently audited.",
+    "attribution": "VV科技 public subscription / https://github.com/free18/v2ray"
+  },
+  {
     "url": "https://t.me/s/free4allVPN?q=%23DartVPN&before=1013",
     "format": "telegram-operator",
     "server_domain_suffix": "dart-vpn.com",

@@ -37,9 +37,11 @@ python collect.py --count 20 --max-latency 200 --max-risk 10
 
 ## 来源及公开凭据风险
 
-当前接入主动公开的自建分享：
+按用户要求，另接入 Pawdroid/Free-servers、free-nodes/v2rayfree 和 free18/v2ray 的上游公开免费订阅做节点优选。发布者主动提供订阅不等于我们独立确认了每台服务器的所有权或再分发许可；不接受已知泄露/付费私人账户，收到运营者撤回要求即移除。仅将通过测试的 QX 兼容节点公开，VLESS/Reality 等明确跳过。最多测试去重后的前150个候选，不宣称已测完整列表。
+
+同时保留主动公开的自建分享：
 - General Kim / [@general_kim_free_vpn](https://t.me/general_kim_free_vpn)：运营者明确说明自己搭建 SS 服务器，且“欢迎大家自由使用并分享给更多人”。项目最后更新 2025-04-28，需实测确认存活。
-- VV科技 / [@vvkj11](https://t.me/vvkj11)：只读取 free18/v2ray README 的“自建节点”分组，不读取其聚合订阅。
+- VV科技 / [@vvkj11](https://t.me/vvkj11)：读取 free18/v2ray README 的“自建节点”分组，并另行读取其主动公布的通用免费订阅。
 - 五叶 / [@hkaa0](https://t.me/hkaa0)：只读取 #自建 搜索页中明确写着“转发请标注来源”的帖子，排除匿名投稿，订阅保留署名。
 
 这些是发布者自述的自建免费分享，并非对服务器所有权的独立审计。历史分享可能已失效；公开分享不等于低延迟、安全或干净，仍需实测。只看 Telegram 公开网页，不登录/入群，不抓取私人消息或付费凭据。
