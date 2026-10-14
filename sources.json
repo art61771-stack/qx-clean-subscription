@@ -1,5 +1,14 @@
 [
   {
+    "url": "https://t.me/s/free4allVPN?q=%23DartVPN&before=1013",
+    "format": "telegram-operator",
+    "server_domain_suffix": "dart-vpn.com",
+    "redistribution_allowed": true,
+    "evidence": "https://t.me/free4allVPN/711",
+    "note": "Operator publicly supplies free DartVPN SS keys, 1TB each; only dart-vpn.com nodes accepted, excluding unrelated reposts. Historic March 2024 keys, liveness must be tested.",
+    "attribution": "DartVPN / https://t.me/free4allVPN"
+  },
+  {
     "url": "https://raw.githubusercontent.com/general-vpn/FREE-Shadowsocks-Servers/main/README.md",
     "redistribution_allowed": true,
     "evidence": "https://github.com/general-vpn/FREE-Shadowsocks-Servers",

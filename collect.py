@@ -274,6 +274,11 @@ def main():
             text = fetch(source['url'])
             if source.get('format') == 'selfbuilt-markdown':
                 text = text.split('## 自建节点', 1)[1].split('====================================================', 1)[0]
+            elif source.get('format') == 'telegram-operator':
+                import re
+                import html
+                bodies = re.findall(r'<div class="tgme_widget_message_text[^>]*>(.*?)</div>', text, re.S)
+                text = '\n'.join(html.unescape(re.sub(r'<[^>]+>', '\n', body)) for body in bodies)
             elif source.get('format') == 'telegram-selfbuilt':
                 import re
                 import html
@@ -293,6 +298,9 @@ def main():
             for line in lines:
                 try:
                     node = parse(line)
+                    suffix = source.get('server_domain_suffix')
+                    if suffix and not node['server'].endswith('.' + suffix):
+                        continue
                     key = json.dumps(node, sort_keys=True)
                     if key not in seen and len(candidates) < args.max_candidates:
                         seen.add(key)
