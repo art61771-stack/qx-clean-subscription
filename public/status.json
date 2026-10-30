@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-10-30T13:05:58.114427+00:00",
+  "updated_at": "2026-10-30T22:27:03.687294+00:00",
   "requested": 20,
   "selected": 0,
   "candidates": 72,
@@ -9,10 +9,9 @@
     "vmess": 58
   },
   "test_outcomes": {
-    "non_public_server_rejected": 1,
-    "https_latency_or_status_rejected": 15,
-    "https_connection_failed": 37,
-    "risk_rejected": 4,
+    "https_latency_or_status_rejected": 29,
+    "risk_rejected": 3,
+    "https_connection_failed": 25,
     "server_dns_failed": 15
   },
   "latency_limit_ms": 200.0,
