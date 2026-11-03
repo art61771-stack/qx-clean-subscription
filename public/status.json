@@ -1,17 +1,19 @@
 {
-  "updated_at": "2026-11-02T21:45:49.755234+00:00",
+  "updated_at": "2026-11-03T06:56:17.447814+00:00",
   "requested": 20,
   "selected": 0,
-  "candidates": 39,
+  "candidates": 42,
   "source_errors": 0,
   "candidate_protocols": {
-    "shadowsocks": 21,
-    "vmess": 18
+    "trojan": 1,
+    "shadowsocks": 22,
+    "vmess": 19
   },
   "test_outcomes": {
-    "https_latency_or_status_rejected": 12,
+    "https_latency_or_status_rejected": 11,
+    "exit_ip_query_failed": 1,
     "non_public_server_rejected": 1,
-    "https_connection_failed": 11,
+    "https_connection_failed": 14,
     "server_dns_failed": 15
   },
   "latency_limit_ms": 200.0,
