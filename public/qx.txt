@@ -1,4 +1,4 @@
-# Updated 2026-11-12T20:02:41.865366+00:00; passed 0/20; GitHub runner measurements
+# Updated 2026-11-13T06:54:40.789047+00:00; passed 1/20; GitHub runner measurements
 # Source: Pawdroid / https://github.com/Pawdroid/Free-servers
 # Source: free-nodes / https://github.com/free-nodes/v2rayfree
 # Source: VV科技 public subscription / https://github.com/free18/v2ray
@@ -6,4 +6,4 @@
 # Source: General Kim / https://t.me/general_kim_free_vpn
 # Source: VV科技 / https://t.me/vvkj11
 # Source: 五叶 / https://t.me/hkaa0
-
+vmess=206.237.11.17:50376, password=9091fd64-7e8e-4b7a-8ae7-84474f234926, method=aes-128-gcm, udp-relay=false, tag=Clean-01-184ms
