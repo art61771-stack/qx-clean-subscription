@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-11-17T08:02:51.136099+00:00",
+  "updated_at": "2026-11-17T21:02:15.051892+00:00",
   "requested": 20,
   "selected": 1,
   "candidates": 98,
@@ -9,10 +9,10 @@
     "vmess": 78
   },
   "test_outcomes": {
-    "https_latency_or_status_rejected": 29,
-    "https_connection_failed": 48,
+    "https_latency_or_status_rejected": 28,
+    "https_connection_failed": 53,
     "passed": 1,
-    "risk_rejected": 5,
+    "risk_rejected": 1,
     "server_dns_failed": 15
   },
   "latency_limit_ms": 200.0,
@@ -21,8 +21,8 @@
   "screening": "proxycheck.io proxy=no and risk<=limit; unknown rejected",
   "results": [
     {
-      "latency_ms": 190.7,
-      "max_latency_ms": 191.8,
+      "latency_ms": 193.8,
+      "max_latency_ms": 198.7,
       "risk": 0.0
     }
   ]
