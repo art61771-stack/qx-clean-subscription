@@ -1,17 +1,17 @@
 {
-  "updated_at": "2026-11-18T20:39:41.723888+00:00",
+  "updated_at": "2026-11-19T07:35:13.705050+00:00",
   "requested": 20,
   "selected": 1,
-  "candidates": 79,
+  "candidates": 73,
   "source_errors": 0,
   "candidate_protocols": {
-    "shadowsocks": 20,
+    "shadowsocks": 21,
     "trojan": 1,
-    "vmess": 58
+    "vmess": 51
   },
   "test_outcomes": {
     "https_latency_or_status_rejected": 29,
-    "https_connection_failed": 31,
+    "https_connection_failed": 25,
     "risk_rejected": 3,
     "passed": 1,
     "server_dns_failed": 15
@@ -22,8 +22,8 @@
   "screening": "proxycheck.io proxy=no and risk<=limit; unknown rejected",
   "results": [
     {
-      "latency_ms": 145.5,
-      "max_latency_ms": 184.4,
+      "latency_ms": 41.5,
+      "max_latency_ms": 42.8,
       "risk": 0.0
     }
   ]
